@@ -28,14 +28,15 @@ function tone(freq, duration, type = "square", volume = 0.08, delay = 0) {
 }
 
 // ✏️ YOUR TURN: change the frequencies/waveforms to make the machine sound how you want.
+// Soft "music box" sounds: mostly sine waves at high, sweet pitches.
 export const sfx = {
-  lever: () => { tone(140, 0.15, "sawtooth", 0.12); tone(90, 0.2, "sawtooth", 0.1, 0.08); },
-  tick: () => tone(900 + Math.random() * 300, 0.03, "square", 0.03),
-  clunk: () => tone(110, 0.12, "triangle", 0.2),
-  win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, "square", 0.07, i * 0.09)),
-  lose: () => [392, 330, 262].forEach((f, i) => tone(f, 0.22, "triangle", 0.12, i * 0.14)),
-  stick: () => tone(600, 0.06, "sine", 0.1),
-  peel: () => tone(300, 0.08, "sine", 0.08),
+  lever: () => { tone(330, 0.25, "triangle", 0.12); tone(220, 0.3, "sine", 0.1, 0.1); },
+  tick: () => tone(1800 + Math.random() * 600, 0.05, "sine", 0.025),
+  clunk: () => { tone(1568, 0.35, "sine", 0.08); tone(784, 0.3, "triangle", 0.05); },
+  win: () => [1047, 1319, 1568, 2093, 1568, 2093].forEach((f, i) => tone(f, 0.45, "sine", 0.07, i * 0.11)),
+  lose: () => [784, 659, 523].forEach((f, i) => tone(f, 0.4, "sine", 0.08, i * 0.16)),
+  stick: () => tone(1319, 0.15, "sine", 0.08),
+  peel: () => tone(880, 0.15, "sine", 0.06),
 };
 
 export function isMuted() {

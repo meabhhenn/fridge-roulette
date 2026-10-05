@@ -16,7 +16,7 @@
 
 ## Features I'm most proud of
 - TODO: pick 2–3. Ideas: the slot machine (reels land on emojis of the recipe's ingredients), re-spins
-  reuse cached results so they don't cost API calls, the riso-zine design, sounds made with Web Audio (no audio files).
+  reuse cached results so they don't cost API calls, the coquette design (bows, lace, gingham), sounds made with Web Audio (no audio files).
 
 ## How it works
 - TODO, in your words: browser → `/api/recipes` (Vercel serverless function) → Spoonacular `findByIngredients` → trimmed JSON back.
@@ -39,4 +39,4 @@
 ## How I used AI
 - TODO: short summary + citations, e.g. "Brainstorming and initial scaffold with Claude (Opus 5.5, claude.ai);
   understanding/debugging/edits with Kiro. See prompt_log.md."
-- Recipe data: Spoonacular API. Fonts: Permanent Marker and Shantell Sans (Google Fonts).
+- Recipe data: Spoonacular API. Fonts: Pinyon Script and Cormorant Garamond (Google Fonts).

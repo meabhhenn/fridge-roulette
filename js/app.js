@@ -294,7 +294,11 @@ function renderPins() {
     remove.textContent = "×";
     remove.setAttribute("aria-label", `Unpin ${r.title}`);
     remove.addEventListener("click", () => togglePin(r));
-    card.append(link, remove);
+    const bow = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    bow.setAttribute("class", "bow");
+    bow.setAttribute("aria-hidden", "true");
+    bow.innerHTML = '<use href="#bow" />';
+    card.append(bow, link, remove);
     return card;
   });
   els.pins.replaceChildren(...cards);

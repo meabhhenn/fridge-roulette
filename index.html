@@ -4,37 +4,45 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fridge Roulette</title>
-  <meta name="description" content="Stick what's in your fridge on the door, pull the lever, get a recipe." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎰</text></svg>" />
+  <meta name="description" content="Put what's in your fridge on the door, pull the lever, get a recipe." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍒</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Shantell+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Pinyon+Script&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- SVG filter that makes straight CSS borders look hand-drawn -->
+  <!-- A reusable bow drawing. Use it anywhere with <svg><use href="#bow"/></svg> -->
   <svg class="defs" aria-hidden="true" focusable="false">
-    <filter id="wobble">
-      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="3" />
-      <feDisplacementMap in="SourceGraphic" scale="4" />
-    </filter>
+    <symbol id="bow" viewBox="0 0 100 64">
+      <path d="M50 28 C 34 2, 2 4, 6 26 C 9 44, 36 42, 50 31 Z" />
+      <path d="M50 28 C 66 2, 98 4, 94 26 C 91 44, 64 42, 50 31 Z" />
+      <path d="M47 32 L 34 62 L 42 57 L 47 63 L 51 34 Z" />
+      <path d="M53 32 L 66 62 L 58 57 L 53 63 L 49 34 Z" />
+      <ellipse cx="50" cy="30" rx="8" ry="9" />
+      <path class="bow-shine" d="M18 18 C 24 12, 34 14, 40 22" />
+      <path class="bow-shine" d="M82 18 C 76 12, 66 14, 60 22" />
+    </symbol>
   </svg>
 
   <header class="masthead">
-    <h1 data-text="Fridge Roulette">Fridge Roulette</h1>
-    <p class="sub">Stick what you've got on the fridge. Pull the lever. Make whatever comes out.</p>
+    <h1>Fridge Roulette</h1>
+    <svg class="bow title-bow" aria-hidden="true"><use href="#bow" /></svg>
+    <p class="sub">Put what you have on the fridge, pull the lever, and make whatever comes out.</p>
     <button id="mute" class="mute" type="button" aria-pressed="true">Sound on</button>
   </header>
 
   <main class="table">
     <section class="fridge-col" aria-label="Your fridge">
       <div class="fridge">
+        <svg class="bow fridge-bow" aria-hidden="true"><use href="#bow" /></svg>
         <div class="freezer"><span class="handle"></span></div>
         <div class="door">
           <span class="handle"></span>
           <div id="door-stickers" class="door-stickers"></div>
           <p id="door-empty" class="door-empty">nothing on here yet</p>
         </div>
+        <div class="feet"><span></span><span></span></div>
       </div>
 
       <div class="sheet-panel">
@@ -43,7 +51,7 @@
         <form id="custom-form" class="custom-form">
           <label for="custom-input" class="visually-hidden">Add another ingredient</label>
           <input id="custom-input" type="text" maxlength="30" autocomplete="off" placeholder="something else, like tofu" />
-          <button type="submit">Stick it on</button>
+          <button type="submit">Add it</button>
         </form>
         <button id="clear-fridge" class="text-btn" type="button" hidden>Clear the fridge</button>
       </div>
@@ -51,13 +59,16 @@
 
     <section class="machine-col" aria-label="Recipe slot machine">
       <div id="machine" class="machine">
+        <svg class="bow machine-bow" aria-hidden="true"><use href="#bow" /></svg>
         <p class="marquee">spin for dinner</p>
+        <div class="pearls" aria-hidden="true"></div>
         <div id="reels" class="reels" aria-hidden="true"></div>
+        <div class="pearls" aria-hidden="true"></div>
         <button id="lever" class="lever" type="button" aria-label="Pull the lever to spin for a recipe">
           <span class="stick"></span>
           <span class="knob"></span>
         </button>
-        <span class="pull-label" aria-hidden="true">pull!</span>
+        <span class="pull-label" aria-hidden="true">pull me</span>
         <div class="mouth"></div>
       </div>
       <p id="machine-note" class="machine-note" role="status"></p>

@@ -79,7 +79,14 @@ yes
 ```
 → Claude built Fridge Roulette: fridge with ingredient stickers, slot machine with 3 reels and a lever,
   serverless `/api/recipes` calling Spoonacular `findByIngredients`, printed "ticket" result, pinboard,
-  Web Audio sound effects, riso-zine styling. Tested with mock data at desktop and phone widths.
+  Web Audio sound effects, riso-zine styling (later restyled, see Prompt 11). Tested with mock data at desktop and phone widths.
+
+**Prompt 11**
+```
+i like this idea much much more, but i don't like this style, maybe more coquette
+```
+→ Claude restyled it: pink gingham, cherry-red bows, lace scallop edges, pearl trim, script title,
+  cherry lever knob, and softer music-box sounds. Same features and code structure.
 
 **My notes / why I pivoted:**
 - TODO: why Moodboard didn't feel like mine, and what makes this one better.
