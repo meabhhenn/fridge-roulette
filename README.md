@@ -8,7 +8,7 @@
 **Demo video:** TODO
 
 ## What it does
-- TODO: 1–2 sentences. (Stick ingredients on a hand-drawn fridge, pull a slot-machine lever, get a real recipe that uses them.)
+- TODO: 1–2 sentences. (Stick ingredients on a little pink fridge, pull a slot-machine lever, get a real recipe that uses them.)
 
 ## How to use it
 - TODO: tap stickers / type your own → pull the lever → open, pin, or spin again. Tap a sticker on the door to take it off.
@@ -21,7 +21,7 @@
 ## How it works
 - TODO, in your words: browser → `/api/recipes` (Vercel serverless function) → Spoonacular `findByIngredients` → trimmed JSON back.
 - Key files: `js/app.js` (fridge, spin flow, ticket, pins), `js/slot.js` (reels), `js/sound.js` (sounds),
-  `js/ingredients.js` (sticker list), `api/recipes.js` (backend), `style.css` (zine look).
+  `js/ingredients.js` (sticker list), `api/recipes.js` (backend), `style.css` (coquette look).
 
 ## Running it locally
 1. Install Node 18+ (nodejs.org, LTS).
