@@ -1,0 +1,12 @@
+{
+  "name": "fridge-roulette",
+  "version": "1.0.0",
+  "description": "Stick what's in your fridge on the door, pull the lever, get a recipe. CMU 15-113 Project 2.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "node dev-server.js",
+    "mock": "USE_MOCK=true node dev-server.js"
+  },
+  "engines": { "node": ">=18" }
+}

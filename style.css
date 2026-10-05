@@ -1,0 +1,492 @@
+/* style.css — hand-drawn zine look.
+   Photocopy paper, risograph inks, marker lettering, wobbly outlines, tape. */
+
+/* ✏️ YOUR TURN: these are risograph ink colors. Swap any of them to change the whole zine. */
+:root {
+  --paper: #e6e4de;   /* photocopy paper */
+  --sheet: #fbfaf6;   /* white sticker paper */
+  --ink: #000;
+  --pink: #ff48b0;    /* riso fluorescent pink */
+  --blue: #0078bf;    /* riso blue */
+  --yellow: #ffe800;  /* riso yellow */
+  --tape: rgb(255 232 0 / 0.55);
+  --cell: 96px;       /* height of one slot reel window */
+  --marker: "Permanent Marker", "Comic Sans MS", cursive;
+  --hand: "Shantell Sans", "Comic Sans MS", cursive;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--hand);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink);
+  background-color: var(--paper);
+  /* halftone dots + photocopier grain */
+  background-image:
+    radial-gradient(rgb(0 0 0 / 0.07) 0.8px, transparent 1.2px),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 7px 7px, 160px 160px;
+}
+
+.defs { position: absolute; width: 0; height: 0; }
+
+h1, h2, h3, .marquee, .pull-label, dt { font-family: var(--marker); font-weight: 400; }
+
+:focus-visible { outline: 3px dashed var(--blue); outline-offset: 4px; }
+
+/* ---------- reusable hand-drawn outline ----------
+   The border lives on a pseudo-element so only the line wobbles, not the text. */
+.fridge, .freezer, .door, .sheet-panel, .machine, .reel, .ticket, .pin-card, .btn,
+.custom-form input, .custom-form button, .magnet .emoji {
+  position: relative;
+}
+.freezer::before, .door::before, .sheet-panel::before, .machine::before, .reel::before,
+.pin-card::before, .btn::before, .custom-form input + button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--ink);
+  border-radius: inherit;
+  filter: url(#wobble);
+  pointer-events: none;
+}
+
+/* tape strip */
+.sheet-panel::after, .pin-card::after {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 90px;
+  height: 24px;
+  background: var(--tape);
+  transform: translateX(-50%) rotate(-3deg);
+  mix-blend-mode: multiply;
+}
+
+/* ---------- masthead ---------- */
+.masthead {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 40px 16px 8px;
+}
+.masthead h1 {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  font-size: clamp(3rem, 11vw, 6.6rem);
+  line-height: 0.95;
+  transform: rotate(-2deg);
+  isolation: isolate;
+}
+/* riso misregistration: a pink copy printed slightly off */
+.masthead h1::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: var(--pink);
+  transform: translate(5px, 4px);
+  z-index: -1;
+  mix-blend-mode: multiply;
+}
+.sub {
+  max-width: 34ch;
+  margin: 14px 0 0;
+  font-size: 1.15rem;
+}
+.mute {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  font: 600 0.9rem var(--hand);
+  background: none;
+  border: 0;
+  border-bottom: 2px solid var(--ink);
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+/* ---------- layout ---------- */
+.table {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  display: grid;
+  grid-template-columns: minmax(300px, 5fr) 7fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ---------- fridge ---------- */
+.fridge {
+  display: grid;
+  grid-template-rows: 90px auto;
+  gap: 6px;
+  transform: rotate(-1deg);
+}
+.freezer, .door {
+  background: var(--sheet);
+  border-radius: 22px 22px 8px 8px;
+}
+.door { border-radius: 8px 8px 22px 22px; min-height: 300px; padding: 22px 20px 22px 44px; }
+.freezer::before, .door::before { box-shadow: 6px 6px 0 var(--ink); }
+.handle {
+  position: absolute;
+  left: 16px;
+  width: 9px;
+  border-radius: 6px;
+  background: var(--ink);
+}
+.freezer .handle { bottom: 14px; height: 40px; }
+.door .handle { top: 18px; height: 90px; }
+
+.door-stickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 10px;
+  align-content: flex-start;
+}
+.door-empty {
+  margin: 0;
+  padding-top: 70px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.55;
+}
+
+/* stickers stuck on the door */
+.magnet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  transform: rotate(var(--tilt));
+  animation: slap 0.25s ease-out;
+}
+.magnet .emoji {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  font-size: 32px;
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 3px solid var(--ink);
+  box-shadow: 0 0 0 4px var(--sheet), 3px 4px 0 4px var(--ink);
+}
+.magnet .emoji.letter { font-family: var(--marker); background: var(--pink); }
+.magnet .label { margin-top: 8px; font-size: 0.8rem; font-weight: 600; line-height: 1.2; text-align: center; }
+.magnet:hover .emoji { transform: rotate(8deg); }
+
+/* ---------- sticker sheet ---------- */
+.sheet-panel {
+  margin-top: 34px;
+  padding: 22px 18px 18px;
+  background: var(--sheet);
+  border-radius: 6px;
+  transform: rotate(0.7deg);
+}
+.sheet-panel h2 { margin: 0 0 12px; font-size: 1.6rem; }
+.sheet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 8px;
+}
+.sheet-sticker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  font: 600 0.85rem var(--hand);
+  color: var(--ink);
+  background: transparent;
+  border: 2px dashed rgb(0 0 0 / 0.35);
+  border-radius: 999px;
+  cursor: pointer;
+  text-align: left;
+}
+.sheet-sticker .emoji { font-size: 1.2rem; }
+.sheet-sticker[aria-pressed="true"] {
+  background: var(--yellow);
+  border: 2px solid var(--ink);
+}
+.sheet-sticker:hover { border-color: var(--ink); }
+
+.custom-form { display: flex; gap: 8px; margin-top: 14px; }
+.custom-form input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 10px 12px;
+  background: var(--paper);
+  border: 0;
+  border-bottom: 3px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+}
+.custom-form button {
+  font: 600 0.95rem var(--hand);
+  padding: 10px 14px;
+  background: var(--pink);
+  color: var(--ink);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.text-btn {
+  margin-top: 12px;
+  padding: 0;
+  font: 0.85rem var(--hand);
+  background: none;
+  border: 0;
+  text-decoration: underline wavy;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* ---------- slot machine (the star of the page) ---------- */
+.machine-col { display: flex; flex-direction: column; align-items: center; }
+.machine {
+  width: min(100% - 60px, 520px);
+  margin-right: 60px; /* room for the lever */
+  padding: 22px 26px 30px;
+  background: var(--blue);
+  border-radius: 38px 38px 18px 18px;
+}
+.machine::before { border-width: 4px; box-shadow: 9px 9px 0 var(--ink); }
+.marquee {
+  margin: 0 auto 18px;
+  width: fit-content;
+  padding: 4px 18px;
+  font-size: clamp(1.3rem, 4vw, 1.9rem);
+  background: var(--pink);
+  border: 3px solid var(--ink);
+  border-radius: 12px;
+  transform: rotate(-2deg);
+}
+.reels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background: var(--yellow);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+}
+.reel {
+  height: var(--cell);
+  overflow: hidden;
+  background: var(--sheet);
+  border-radius: 10px;
+}
+.reel::before { z-index: 1; box-shadow: inset 0 10px 10px -6px rgb(0 0 0 / 0.35), inset 0 -10px 10px -6px rgb(0 0 0 / 0.35); }
+.cell {
+  height: var(--cell);
+  display: grid;
+  place-items: center;
+  font-size: calc(var(--cell) * 0.55);
+}
+.strip.looping { animation: reel-loop 0.32s linear infinite; filter: blur(1.5px); }
+@keyframes reel-loop { to { transform: translateY(-50%); } }
+
+.mouth {
+  height: 16px;
+  margin: 22px 30px 0;
+  background: var(--ink);
+  border-radius: 8px;
+}
+
+/* lever */
+.lever {
+  position: absolute;
+  top: 70px;
+  right: -60px;
+  width: 50px;
+  height: 170px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.lever::after { /* the bracket bolted to the machine */
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -12px;
+  width: 36px;
+  height: 30px;
+  background: var(--ink);
+  border-radius: 0 10px 10px 0;
+}
+.lever .stick {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  width: 11px;
+  height: 125px;
+  margin-left: -5px;
+  background: var(--ink);
+  border-radius: 6px;
+  transform-origin: bottom;
+  transition: transform 0.18s ease-in;
+}
+.lever .knob {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 46px;
+  height: 46px;
+  margin-left: -23px;
+  background: var(--pink);
+  border: 4px solid var(--ink);
+  border-radius: 50%;
+  transition: transform 0.18s ease-in;
+}
+.lever:hover:not(:disabled) .knob { transform: translateY(6px); }
+.lever.pulled .stick { transform: scaleY(-0.55); }
+.lever.pulled .knob { transform: translateY(176px); }
+.lever:not(.pulled) .stick, .lever:not(.pulled) .knob { transition-timing-function: cubic-bezier(0.3, 1.6, 0.5, 1); transition-duration: 0.5s; }
+.lever:disabled { cursor: wait; }
+.pull-label {
+  position: absolute;
+  top: 22px;
+  right: -92px;
+  font-size: 1.3rem;
+  transform: rotate(12deg);
+}
+.machine.busy .pull-label { opacity: 0; }
+
+.machine-note { min-height: 1.5em; margin: 16px 0 0; font-weight: 600; text-align: center; }
+
+.shake { animation: shake 0.4s; }
+@keyframes shake {
+  20%, 60% { transform: translateX(-8px) rotate(-1deg); }
+  40%, 80% { transform: translateX(8px) rotate(1deg); }
+}
+
+/* ---------- ticket that prints out ---------- */
+.ticket-slot { width: min(100% - 60px, 450px); margin-right: 60px; margin-top: -6px; }
+.ticket {
+  --zz: 10px;
+  padding: 18px 20px calc(24px + var(--zz));
+  background: var(--sheet);
+  border-left: 3px solid var(--ink);
+  border-right: 3px solid var(--ink);
+  /* zig-zag torn bottom edge */
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--zz)) 100%;
+  animation: print 0.7s steps(10, end) both;
+  transform-origin: top;
+}
+@keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+
+.photo {
+  margin: 0 0 14px;
+  background: var(--blue);
+  border: 3px solid var(--ink);
+}
+.photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.35) brightness(1.1);
+  mix-blend-mode: multiply; /* black-and-white photo printed on blue = riso duotone */
+}
+.ticket h3 { margin: 0 0 10px; font-size: 1.55rem; line-height: 1.15; }
+.ticket dl { margin: 0 0 16px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+.ticket dt { font-size: 1rem; white-space: nowrap; align-self: start; }
+.ticket dd { margin: 0; }
+.ticket dt:nth-of-type(2) { background: linear-gradient(transparent 62%, var(--pink) 62%); }
+.ticket dt:nth-of-type(1) { background: linear-gradient(transparent 62%, var(--yellow) 62%); }
+.ticket-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.ticket.error { padding-top: 22px; }
+.ticket.error p { margin: 0; font-weight: 600; }
+
+.btn {
+  display: inline-block;
+  padding: 8px 14px;
+  font: 600 0.95rem var(--hand);
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--sheet);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn::before { box-shadow: 3px 3px 0 var(--ink); }
+.btn.open { background: var(--yellow); }
+.btn[aria-pressed="true"] { background: var(--pink); }
+.btn:active { transform: translate(2px, 2px); }
+
+/* ---------- pinboard ---------- */
+.pinboard {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+.pinboard h2 { margin: 0 0 24px; font-size: 2rem; transform: rotate(-1deg); }
+.pins { display: flex; flex-wrap: wrap; gap: 28px 22px; }
+.pins-empty { margin: 0; font-style: italic; opacity: 0.6; }
+.pin-card {
+  width: 190px;
+  padding: 20px 30px 16px 16px;
+  background: var(--sheet);
+  border-radius: 4px;
+  transform: rotate(var(--tilt));
+}
+.pin-card a { color: var(--ink); font-weight: 600; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.unpin {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  font: 800 1.1rem var(--hand);
+  line-height: 1;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+footer { max-width: 1120px; margin: 0 auto; padding: 16px 16px 40px; font-size: 0.9rem; }
+footer a { color: var(--ink); }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+@keyframes slap { from { transform: rotate(var(--tilt)) scale(1.4); opacity: 0; } }
+
+/* ---------- small screens ---------- */
+@media (max-width: 800px) {
+  .table { grid-template-columns: 1fr; gap: 40px; }
+  .fridge { grid-template-rows: 46px auto; }
+  .door { min-height: 150px; }
+  .door-empty { padding-top: 30px; }
+  .freezer .handle { bottom: 8px; height: 22px; }
+  .door .handle { height: 60px; }
+}
+@media (max-width: 520px) {
+  :root { --cell: 76px; }
+  .masthead { padding-top: 52px; }
+  .machine { padding: 18px 16px 24px; }
+  .reels { gap: 8px; padding: 10px; }
+  .lever { right: -56px; transform: scale(0.85); transform-origin: top; }
+  .pull-label { display: none; }
+  .pin-card { width: calc(50% - 11px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
