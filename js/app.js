@@ -20,11 +20,14 @@ const els = {
   pins: $("pins"),
   pinsEmpty: $("pins-empty"),
   mute: $("mute"),
+  mustSlot: $("must-slot"),
+  mustSelect: $("must-select"),
 };
 
 const reels = createReels($("reels"));
 let fridge = load("fr-fridge", []);   // [{ name, emoji }]
 let pantry = load("fr-pantry", []);   // custom ingredients user types in
+let mustUse = load("fr-must", "");   // the one ingredient every recipe must use ("" = none)
 let pins = load("fr-pins", []);       // saved recipes
 const cache = new Map();              // fridge contents -> recipes (so re-spins don't call the API)
 const seen = new Map();               // fridge contents -> ids already shown
@@ -64,6 +67,21 @@ els.clearFridge.addEventListener("click", () => {
 
 els.lever.addEventListener("click", spin);
 els.mute.addEventListener("click", () => { setMuted(!isMuted()); updateMute(); });
+// Must-use slot: drop a magnet here (desktop) or pick from the dropdown (phones)
+els.mustSlot.addEventListener("dragover", (e) => {
+  e.preventDefault(); // without this, the browser won't allow dropping here
+  els.mustSlot.classList.add("drag-over");
+});
+els.mustSlot.addEventListener("dragleave", () => {
+  els.mustSlot.classList.remove("drag-over");
+});
+els.mustSlot.addEventListener("drop", (e) => {
+  e.preventDefault();
+  els.mustSlot.classList.remove("drag-over");
+  const name = e.dataTransfer.getData("text/plain");
+  if (hasIngredient(name)) setMustUse(name);
+});
+els.mustSelect.addEventListener("change", () => setMustUse(els.mustSelect.value));
 
 // ---------- fridge ----------
 
@@ -120,14 +138,43 @@ function renderDoor() {
     const label = document.createElement("span");
     label.className = "label";
     label.textContent = ing.name;
-    btn.append(face, label);
+    btn.append(face, label);    
     btn.addEventListener("click", () => removeIngredient(ing.name));
+    btn.draggable = true;
+    btn.addEventListener("dragstart", (e) => e.dataTransfer.setData("text/plain", ing.name));
     return btn;
   });
   els.door.replaceChildren(...stickers);
   els.doorEmpty.hidden = fridge.length > 0;
-  els.clearFridge.hidden = fridge.length === 0;
+  els.clearFridge.hidden = fridge.length === 0;  
   syncSheet();
+  renderMustSlot();
+}
+
+function setMustUse(name) {
+  mustUse = name;
+  save("fr-must", mustUse);
+  renderMustSlot();
+  if (name) sfx.stick();
+}
+
+function renderMustSlot() {
+  if (mustUse && !hasIngredient(mustUse)) {
+    mustUse = ""; // it was taken out of the fridge, so clear it
+    save("fr-must", mustUse);
+  }
+  const options = fridge.map((ing) => {
+    const option = document.createElement("option");
+    option.value = ing.name;
+    option.textContent = `${ing.emoji || "✨"} ${ing.name}`;
+    return option;
+  });
+  const anything = document.createElement("option");
+  anything.value = "";
+  anything.textContent = "anything";
+  els.mustSelect.replaceChildren(anything, ...options);
+  els.mustSelect.value = mustUse;
+  els.mustSlot.classList.toggle("filled", Boolean(mustUse));
 }
 
 function hasIngredient(name) {
@@ -194,8 +241,12 @@ async function spin() {
 
   try {
     // Fetch and a minimum spin time run in parallel, so the reels always spin for a moment.
-    const [recipes] = await Promise.all([getRecipes(key), wait(900)]);
-    recipe = pickUnseen(key, recipes);
+    const [recipes] = await Promise.all([getRecipes(key), wait(900)]);    
+    const matches = mustUse ? recipes.filter((r) => usesIngredient(r, mustUse)) : recipes;
+    recipe = pickUnseen(`${key}|${mustUse}`, matches);
+    if (!recipe && mustUse) {
+      error = `None of these recipes use ${mustUse}. Add more to the fridge or pick a different must-use.`;
+    }
   } catch (err) {
     error = err.message;
   }
@@ -244,6 +295,11 @@ function pickUnseen(key, recipes) {
   shown.add(choice.id);
   seen.set(key, shown);
   return choice;
+}
+
+// Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
+function usesIngredient(recipe, name) {
+  return recipe.used.some((u) => u.includes(name) || name.includes(u));
 }
 
 // The reels land on emojis for ingredients the recipe uses.

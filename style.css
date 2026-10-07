@@ -265,6 +265,30 @@ h1, h2, .marquee, .pull-label { font-family: var(--script); font-weight: 400; }
   /* ribbon banner with notched ends */
   clip-path: polygon(0 0, 100% 0, 94% 50%, 100% 100%, 0 100%, 6% 50%);
 }
+/* must-use slot above the reels */
+.must-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 10px auto 0;
+  padding: 6px 8px 6px 16px;
+  border: 1.5px dashed var(--rose);
+  border-radius: 999px;
+}
+.must-slot label { font-style: italic; font-weight: 700; color: var(--cherry); }
+.must-slot select {
+  font: 600 1rem var(--serif);
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--rose);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+.must-slot.filled { border-style: solid; border-color: var(--cherry); background: var(--blush); }
+.must-slot.drag-over { border-style: solid; border-color: var(--cherry); background: var(--ballet); }
+.magnet[draggable="true"] { cursor: grab; }
 .pearls {
   height: 14px;
   margin: 8px 6px;
