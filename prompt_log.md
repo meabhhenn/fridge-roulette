@@ -5,13 +5,11 @@
 - **Kiro (in my editor):** running the app locally, git setup and pushing to GitHub, checking that secrets weren't committed.
 
 ## Which tool for which job
-TODO (2–3 sentences, your words). Facts to draw on:
 - Claude: planning, big-picture ideas, generating the whole first version, explaining code and giving step-by-step instructions.
 - Kiro: works inside the actual project folder, runs commands, sees real files, does git operations.
 - Why the split: e.g. Claude for thinking/designing, Kiro for anything that touches the real files and terminal.
 
 ## One place AI got it wrong
-TODO (one short paragraph, your words). Facts to draw on:
 - Claude's original `reelFaces` function used `.filter(Boolean)`, which silently dropped any ingredient without an emoji.
 - After I added custom ingredients, a recipe using my apple and milk showed 🥛 🥛 🥛 on the reels.
 - I traced it to that line and changed it to use ✨ as a fallback instead of dropping the ingredient.
