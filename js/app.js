@@ -303,11 +303,6 @@ function usesIngredient(recipe, name) {
   return recipe.used.some((u) => u.includes(name) || name.includes(u));
 }
 
-// Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
-function usesIngredient(recipe, name) {
-  return recipe.used.some((u) => u.includes(name) || name.includes(u));
-}
-
 // The reels land on emojis for ingredients the recipe uses.
 function reelFaces(recipe) {
     const faces = [...new Set(recipe.used.map((name) => emojiFor(name) || "✨"))];
