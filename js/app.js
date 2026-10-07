@@ -241,8 +241,9 @@ async function spin() {
 
   try {
     // Fetch and a minimum spin time run in parallel, so the reels always spin for a moment.
-    const [recipes] = await Promise.all([getRecipes(key), wait(900)]);    
-    const matches = mustUse ? recipes.filter((r) => usesIngredient(r, mustUse)) : recipes;
+    const [recipes] = await Promise.all([getRecipes(key), wait(900)]);  
+    const real = recipes.filter((r) => fridge.some((ing) => usesIngredient(r, ing.name)));  
+    const matches = mustUse ? real.filter((r) => usesIngredient(r, mustUse)) : real;
     recipe = pickUnseen(`${key}|${mustUse}`, matches);
     if (!recipe && mustUse) {
       error = `None of these recipes use ${mustUse}. Add more to the fridge or pick a different must-use.`;
@@ -295,6 +296,11 @@ function pickUnseen(key, recipes) {
   shown.add(choice.id);
   seen.set(key, shown);
   return choice;
+}
+
+// Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
+function usesIngredient(recipe, name) {
+  return recipe.used.some((u) => u.includes(name) || name.includes(u));
 }
 
 // Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
