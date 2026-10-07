@@ -24,6 +24,7 @@ const els = {
 
 const reels = createReels($("reels"));
 let fridge = load("fr-fridge", []);   // [{ name, emoji }]
+let pantry = load("fr-pantry", []);   // custom ingredients user types in
 let pins = load("fr-pins", []);       // saved recipes
 const cache = new Map();              // fridge contents -> recipes (so re-spins don't call the API)
 const seen = new Map();               // fridge contents -> ids already shown
@@ -44,6 +45,14 @@ els.customForm.addEventListener("submit", (e) => {
     return;
   }
   addIngredient(name);
+  // Remember custom ingredients on the sticker sheet
+  const isBuiltIn = INGREDIENTS.find((i) => i.name === name);
+  const isSaved = pantry.find((i) => i.name === name);
+  if (!isBuiltIn && !isSaved) {
+    pantry.push({ name, emoji: emojiFor(name) });
+    save("fr-pantry", pantry);
+    renderSheet();
+  }
   els.customInput.value = "";
 });
 
@@ -59,13 +68,12 @@ els.mute.addEventListener("click", () => { setMuted(!isMuted()); updateMute(); }
 // ---------- fridge ----------
 
 function renderSheet() {
-  const buttons = INGREDIENTS.map((ing) => {
+  const buttons = [...INGREDIENTS, ...pantry].map((ing) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "sheet-sticker";
     btn.dataset.name = ing.name;
-    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji}</span><span class="label"></span>`;
-    btn.querySelector(".label").textContent = ing.name;
+    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji || "✨"}</span><span class="label"></span>`;    btn.querySelector(".label").textContent = ing.name;
     btn.addEventListener("click", () => toggleIngredient(ing.name));
     return btn;
   });
