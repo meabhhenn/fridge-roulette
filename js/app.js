@@ -73,8 +73,10 @@ function renderSheet() {
     btn.type = "button";
     btn.className = "sheet-sticker";
     btn.dataset.name = ing.name;
+    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji || "✨"}</span><span class="label"></span>`;
     btn.querySelector(".label").textContent = ing.name;
-    // Custom ingredients get an x so typos can be removed
+
+    // Custom ingredients get a little × so you can remove typos
     const isCustom = pantry.some((p) => p.name === ing.name);
     if (isCustom) {
       const x = document.createElement("span");
@@ -83,16 +85,16 @@ function renderSheet() {
       x.title = `Remove ${ing.name} from your list`;
       btn.append(x);
     }
-    return btn;
-    });
-    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji || "✨"}</span><span class="label"></span>`;    btn.querySelector(".label").textContent = ing.name;
-        btn.addEventListener("click", (e) => {
+
+    btn.addEventListener("click", (e) => {
       if (e.target.classList.contains("forget")) {
         forgetIngredient(ing.name);
       } else {
         toggleIngredient(ing.name);
       }
     });
+    return btn;
+  });
   els.sheet.replaceChildren(...buttons);
   syncSheet();
 }
