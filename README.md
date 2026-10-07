@@ -4,24 +4,32 @@
 > The assignment requires the README to be "written yourself, in your own words."
 > The bullets are reminders of what each section must cover. Delete this box when done.
 
-**Live app:** TODO (your Vercel URL)
+**Live app:** https://fridge-roulette-eight.vercel.app/
 **Demo video:** TODO
 
 ## What it does
-- TODO: 1–2 sentences. (Stick ingredients on a little pink fridge, pull a slot-machine lever, get a real recipe that uses them.)
+- Allows user to select ingredients available to them to be enetered as slot-machine
+options. When slot-machine is reeled, one to three ingredients are selected and a 
+real recipe using the selected ingredients is output. User may also select one of 
+the ingredients to be 'must-use' in the recipe. The app finds a real recipe that
+uses your ingredients and shows what you already have and what you'd still need to
+buy. You can also pick one ingredient that every recipe must use, for something 
+that's about to go bad.
 
 ## How to use it
-- TODO: tap stickers / type your own → pull the lever → open, pin, or spin again. Tap a sticker on the door to take it off.
-- Works on phones (say you tested it).
+- Click or tap on the stickers that you want to put on your fridge (contenders for
+the slot machine reel). You may also enter your own stickers/ingredients. Click or
+tap on the slot machine lever to selected ingredients that will show up in the recipe
+that is output. Any ingredient chosen from the drop down (with the choices being 
+from your fridge ingredients) above the reel will be included in the recipe, with 
+buttons to open the full recipe, pin it for later, or spin again.. 
+- Clicking or tapping depends on whether you are using phone or computer.
 
 ## Features I'm most proud of
-- TODO: pick 2–3. Ideas: the slot machine (reels land on emojis of the recipe's ingredients), re-spins
-  reuse cached results so they don't cost API calls, the coquette design (bows, lace, gingham), sounds made with Web Audio (no audio files).
+-The must-use slot, because it makes the app useful for a real problem (using up food before it spoils). The dropdown feature was chosen because drag and drop doesn't work with touch. Spoonacular's ingredient matching was misleading, like counting paprika as bell pepper and wonton noodles as pasta. So, instead I re-check each ingredient against what's actually on the fridge, so the "You've got" list is more accurate to what user inputs.
 
 ## How it works
-- TODO, in your words: browser → `/api/recipes` (Vercel serverless function) → Spoonacular `findByIngredients` → trimmed JSON back.
-- Key files: `js/app.js` (fridge, spin flow, ticket, pins), `js/slot.js` (reels), `js/sound.js` (sounds),
-  `js/ingredients.js` (sticker list), `api/recipes.js` (backend), `style.css` (coquette look).
+- When you pull the lever, the browser sends your fridge ingredients to my own endpoint, /api/recipes, which is a serverless function on Vercel. That function adds the secret API key and asks Spoonacular's findByIngredients for matching recipes, then sends back only the fields the page needs. The browser keeps those results, so spinning again doesn't make a new API call. Before picking a recipe, my code checks which ingredients really match the fridge, moves the fake matches to "You'd need," and applies the must-use filter. Then the reels land on emojis of ingredients the chosen recipe uses.
 
 ## Running it locally
 1. Install Node 18+ (nodejs.org, LTS).
@@ -30,13 +38,13 @@
 4. `npm run mock` uses fake recipes so you don't burn API quota while working on the UI.
 
 ## How secrets are handled
-- TODO, in your words: key lives in `.env` locally (gitignored) and in Vercel Environment Variables in production;
-  only the serverless function reads it, so it never reaches the browser or GitHub.
+- The Spoonacular key is never in the code. Locally it lives in .env, which is listed in .gitignore so Git never uploads it. On the live site it's stored in Vercel's Environment Variables.
 
 ## Changes I made myself
-- TODO: e.g. rewrote the ingredient list, changed the ink colors, tuned the sounds, drew my own stickers.
+- I added saved custom ingredients: anything typed in is stored in a pantry list in localStorage and shown on the sticker sheet (renderSheet and the form's submit handler). I added the × to remove custom ingredients (forgetIngredient). I fixed the reels showing the same emoji three times when a recipe used an ingredient without an emoji (reelFaces). I built the must-use slot with drag and drop plus a dropdown (setMustUse, renderMustSlot). I added checkAgainstFridge to correct Spoonacular's fuzzy matches.
 
 ## How I used AI
-- TODO: short summary + citations, e.g. "Brainstorming and initial scaffold with Claude (Opus 5.5, claude.ai);
-  understanding/debugging/edits with Kiro. See prompt_log.md."
+- I used Claude (Opus 5.5) to brainstorm ideas, generate the first version of the app, 
+and restyle it from a zine look to the coquette design. I used Kiro inside my editor 
+to run the app, push to GitHub, and debug. For my own features, I typed and tested the code myself, using Claude's guidance to fix bugs.
 - Recipe data: Spoonacular API. Fonts: Pinyon Script and Cormorant Garamond (Google Fonts).
