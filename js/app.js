@@ -73,10 +73,26 @@ function renderSheet() {
     btn.type = "button";
     btn.className = "sheet-sticker";
     btn.dataset.name = ing.name;
-    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji || "✨"}</span><span class="label"></span>`;    btn.querySelector(".label").textContent = ing.name;
-    btn.addEventListener("click", () => toggleIngredient(ing.name));
+    btn.querySelector(".label").textContent = ing.name;
+    // Custom ingredients get an x so typos can be removed
+    const isCustom = pantry.some((p) => p.name === ing.name);
+    if (isCustom) {
+      const x = document.createElement("span");
+      x.className = "forget";
+      x.textContent = "×";
+      x.title = `Remove ${ing.name} from your list`;
+      btn.append(x);
+    }
     return btn;
-  });
+    });
+    btn.innerHTML = `<span class="emoji" aria-hidden="true">${ing.emoji || "✨"}</span><span class="label"></span>`;    btn.querySelector(".label").textContent = ing.name;
+        btn.addEventListener("click", (e) => {
+      if (e.target.classList.contains("forget")) {
+        forgetIngredient(ing.name);
+      } else {
+        toggleIngredient(ing.name);
+      }
+    });
   els.sheet.replaceChildren(...buttons);
   syncSheet();
 }
@@ -136,6 +152,12 @@ function removeIngredient(name) {
   fridge = fridge.filter((i) => i.name !== name);
   sfx.peel();
   saveFridge();
+}
+function forgetIngredient(name) {
+  pantry = pantry.filter((p) => p.name !== name);  // keep everything except this one
+  save("fr-pantry", pantry);
+  if (hasIngredient(name)) removeIngredient(name);  // also take it off the fridge
+  renderSheet();
 }
 
 function saveFridge() {
