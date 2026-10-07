@@ -239,14 +239,15 @@ async function spin() {
   let recipe = null;
   let error = null;
 
-  try {
+  try {    
     // Fetch and a minimum spin time run in parallel, so the reels always spin for a moment.
-    const [recipes] = await Promise.all([getRecipes(key), wait(900)]);  
-    const real = recipes.filter((r) => fridge.some((ing) => usesIngredient(r, ing.name)));  
+    const query = mustUse || key; // with a must-use item, search for recipes built around it
+    const [recipes] = await Promise.all([getRecipes(query), wait(900)]);
+    const real = recipes.map(checkAgainstFridge).filter((r) => r.used.length > 0);
     const matches = mustUse ? real.filter((r) => usesIngredient(r, mustUse)) : real;
     recipe = pickUnseen(`${key}|${mustUse}`, matches);
     if (!recipe && mustUse) {
-      error = `None of these recipes use ${mustUse}. Add more to the fridge or pick a different must-use.`;
+      error = `No recipes found that use ${mustUse}. Try a different must-use.`;
     }
   } catch (err) {
     error = err.message;
@@ -296,6 +297,15 @@ function pickUnseen(key, recipes) {
   shown.add(choice.id);
   seen.set(key, shown);
   return choice;
+}
+
+
+// Spoonacular's matching is fuzzy, so re-sort every ingredient myself:
+// anything on my fridge goes to "You've got", everything else to "You'd need".
+function checkAgainstFridge(recipe) {
+  const all = [...recipe.used, ...recipe.missing];
+  const onFridge = (name) => fridge.some((ing) => name.includes(ing.name) || ing.name.includes(name));
+  return { ...recipe, used: all.filter(onFridge), missing: all.filter((name) => !onFridge(name)) };
 }
 
 // Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
