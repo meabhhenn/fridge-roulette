@@ -224,7 +224,7 @@ function pickUnseen(key, recipes) {
 
 // The reels land on emojis for ingredients the recipe uses.
 function reelFaces(recipe) {
-  const faces = [...new Set(recipe.used.map(emojiFor).filter(Boolean))];
+    const faces = [...new Set(recipe.used.map((name) => emojiFor(name) || "✨"))];
   while (faces.length < 3) faces.push(faces[0] || "🍴");
   return faces.slice(0, 3);
 }
