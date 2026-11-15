@@ -6,7 +6,7 @@ export function parseIngredients(raw) {
 }
 
 export function slug(title) {
-  return String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return String(title).replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
 // Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
