@@ -58,3 +58,7 @@ test("usesIngredient returns false when the ingredient does not match", () => {
 test("usesIngredient returns false when the used list is empty", () => {
   assert.equal(usesIngredient({ used: [] }, "eggs"), false);
 });
+
+test("usesIngredient does not count egg as eggplant", () => {
+  assert.equal(usesIngredient({ used: ["eggplant"] }, "egg"), false);
+});
