@@ -5,6 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "test": "node --test",
     "dev": "node dev-server.js",
     "mock": "USE_MOCK=true node dev-server.js"
   },

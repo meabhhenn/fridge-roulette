@@ -9,7 +9,14 @@ export function slug(title) {
   return String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-// Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
+// Match whole ingredient phrases, allowing simple plural endings.
 export function usesIngredient(recipe, name) {
-  return recipe.used.some((u) => u.includes(name) || name.includes(u));
+  return recipe.used.some((usedName) =>
+    containsIngredient(usedName, name) || containsIngredient(name, usedName)
+  );
+}
+
+function containsIngredient(text, ingredient) {
+  const escaped = ingredient.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return Boolean(escaped) && new RegExp(`\\b${escaped}(?:s|es)?\\b`).test(text);
 }
