@@ -6,6 +6,7 @@
 // On Vercel, every file in /api becomes an endpoint automatically.
 
 import { MOCK_RECIPES } from "../lib/mock.js";
+import { parseIngredients, slug } from "../js/logic.js";
 
 const SPOONACULAR_URL = "https://api.spoonacular.com/recipes/findByIngredients";
 const MAX_INGREDIENTS = 15;
@@ -13,10 +14,7 @@ const RESULT_COUNT = 12; // the frontend picks randomly from these, so re-spins 
 
 export default async function handler(req, res) {
   // 1. Validate input. Never trust what the browser sends.
-  const ingredients = String(req.query?.ingredients || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter((s) => /^[a-z][a-z \-']{0,29}$/.test(s));
+  const ingredients = parseIngredients(req.query?.ingredients);
 
   if (ingredients.length === 0) {
     return res.status(400).json({ error: "Your fridge is empty. Add an ingredient first." });
@@ -76,8 +74,4 @@ export default async function handler(req, res) {
     console.error("Request to Spoonacular failed", err);
     return res.status(502).json({ error: "Couldn't reach the recipe service. Check your connection." });
   }
-}
-
-function slug(title) {
-  return String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }

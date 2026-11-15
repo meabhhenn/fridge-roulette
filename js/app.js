@@ -2,6 +2,7 @@
 // The browser only ever talks to our own /api/recipes endpoint, never to Spoonacular directly.
 
 import { INGREDIENTS, emojiFor } from "./ingredients.js";
+import { usesIngredient } from "./logic.js";
 import { createReels } from "./slot.js";
 import { sfx, isMuted, setMuted } from "./sound.js";
 
@@ -306,11 +307,6 @@ function checkAgainstFridge(recipe) {
   const all = [...recipe.used, ...recipe.missing];
   const onFridge = (name) => fridge.some((ing) => name.includes(ing.name) || ing.name.includes(name));
   return { ...recipe, used: all.filter(onFridge), missing: all.filter((name) => !onFridge(name)) };
-}
-
-// Does this recipe use the ingredient? Loose match so "egg" counts for "eggs".
-function usesIngredient(recipe, name) {
-  return recipe.used.some((u) => u.includes(name) || name.includes(u));
 }
 
 // The reels land on emojis for ingredients the recipe uses.
